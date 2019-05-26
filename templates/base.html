@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+    <style>  
+      body{
+        background-color:#F2F2F2
+      }
+    </style>
+</head>
+<body>
+
+<!--  anything sandwiched beneath the block content will not be inherited by other html files that-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <img src="static/logo.png" width = 5% height=auto style="border:8px solid #F8F9FB"></img>
+  <a class="navbar-brand" href="{{url_for('home')}}">ArcheoViz</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="{{url_for('home')}}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('visualisations')}}">visualisations</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('visualisation_details')}}">Visualisation Details</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Further Information
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="{{url_for('research')}}">Research</a>
+          <a class="dropdown-item" href="{{url_for('about_the_developer')}}">About The Team</a>
+          <a class="dropdown-item" href="{{url_for('contact')}}">Contact</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+{%block content%}
+  <p>this text is unique to base.html</p>
+
+{%endblock%}
+<style>
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #BFA450;
+   color: white;
+   text-align: center;
+}
+.nav-link {
+  color: white;
+}
+</style>
+
+
+</head>
+<body>
+
+<div class="footer" >
+<ul class="nav justify-content-center">
+  <li class="nav-item" >
+    <a class="nav-link active" href="{{url_for('home')}}">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('visualisations')}}">Visualisations</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('visualisation_details')}}">Visualisation Details</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('about_the_developer')}}">About The Team</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('research')}}">Research</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('contact')}}">Contact</a>
+  </li>
+</ul>
+</body>
+</html>
