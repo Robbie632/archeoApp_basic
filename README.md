@@ -10,23 +10,16 @@ git clone
 then change directory into the app:
 cd app
 
-An environment needs to be made to install packages into and run the app, this can be done wth anaconda:
+The docker image needs to be made:
+docker build -t archeoApp .
 
-conda env archeoVizEnv
+The container needs to be run from the docker image:
 
-The environment needs to be activated:
+docker run -d archeoApp 
 
-conda activate ArcheoVizEnv
+Input the following  url into your browser:
 
-All dependencies for the web app need to then be installed into that environment, this can be done using pip:
-pip -r install requirements.txt
 
-The website-application can then run with python:
-python app
-
-Input the url mentioned in the terminal into your browser:
-
-screenshots
 
 
 
