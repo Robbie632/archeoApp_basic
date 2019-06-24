@@ -22,11 +22,14 @@
 
 http://0.0.0.0:5000
 
+This is the home page:
 ![alt text](screenshots/archeo_home.png "Home")
 
-![alt text](https://github.com/Robbie632/archeoApp_basic/tree/master/screenshots/archeo_form.png "form")
+Go to the 'visualisations' page to input which dataset and which transformation you would like to visualise:
+![alt text](screenshots/archeo_form.png "form")
 
-![alt text](https://github.com/Robbie632/archeoApp_basic/tree/master/screenshots/archeo_viz.png "visualisation")
+This s an example of the types of visualisation that can be visualised and interacted with, hovering of the right hand corner of the visualisation box gives options for how to interact with the plot.
+![alt text](screenshots/archeo_viz.png "visualisation")
 
 
 
