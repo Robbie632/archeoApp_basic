@@ -22,11 +22,11 @@
 
 http://0.0.0.0:5000
 
-![alt text](https://github.com/.png "Logo Title Text 1")
+![alt text](https://github.com/Robbie632/archeoApp_basic/tree/master/screenshots/archeo_home.png "Home")
 
+![alt text](https://github.com/Robbie632/archeoApp_basic/tree/master/screenshots/archeo_form.png "form")
 
-
-
+![alt text](https://github.com/Robbie632/archeoApp_basic/tree/master/screenshots/archeo_viz.png "visualisation")
 
 
 
