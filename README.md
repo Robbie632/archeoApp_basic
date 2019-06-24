@@ -7,16 +7,16 @@
 * First the repository needs to be cloned
 
 * Then change directory into the repo:
-cd archeoApp_basic/
+`cd archeoApp_basic/`
 
 * The docker image needs to be made:
-docker build -t archeoapp .
+`docker build -t archeoapp .`
 
 * The container needs to be run from the docker image:
 
-docker run -p 5000:5000 -d archeoapp
+`docker run -p 5000:5000 -d archeoapp`
 
-*Input the following  url into your browser:
+*Go to the following URL:
 
 http://0.0.0.0:5000
 
