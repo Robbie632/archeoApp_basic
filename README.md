@@ -1,10 +1,11 @@
 ## ArcheoViz
 
 
-### This is a web application that allows visualisation of t-SNE and PCA projections of flint sample and artefact data. This work was originally presented in the paper (ref), link below. 
+### This is a web application that allows visualisation of t-SNE and PCA projections of flint sample and artefact data. 
 
+To use this web application you must first install Docker.
 
-* First the repository needs to be cloned
+* The repository needs to be cloned
 
 * Then change directory into the repo:
 
