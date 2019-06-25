@@ -1,7 +1,7 @@
 ## ArcheoViz
 
 
-### This is a website-application that allows visualisation of t-SNE and PCA projections of flint sample and artefact data. This work was originally presented in the paper (ref), link below. 
+### This is a web application that allows visualisation of t-SNE and PCA projections of flint sample and artefact data. This work was originally presented in the paper (ref), link below. 
 
 
 * First the repository needs to be cloned
