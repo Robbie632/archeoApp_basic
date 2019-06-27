@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-from flask_sqlalchemy import SQLAlchemy
  
 
 ##################################################################
@@ -32,39 +31,6 @@ le = LabelEncoder()
 
 #below sets the secret key for forms
 app.config['SECRET_KEY'] = 'mySecretKey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(base_dir, 'data.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-##################################################################
-#setting up sqlite database
-'''
-db = SQLAlchemy(app)
-
-
-class tsne_bedrock(db.Model):
-    __tablename__ = 'tsne_bedrock'
-
-    id = db.Column(db.Integer, primary_key = True)
-    tsne1 = db.Column(db.Float)
-    tsne2 = db.Column(db.Float)
-    tsne3 = db.Column(db.Float)
-    site_class = db.Column(db.Text)
-    #make sure to change column name to site_class
-    #how do i automatically identify the column names?
-    
-
-    def __init__(self, tsne1, tsne2, tsne3, site_class):
-        
-        self.tsne1 = tsne1
-        self.tsne2 = tsne2
-        self.tsne3 = tsne3
-        self.site_class = site_class
-
-    def __repr__(self):
-            return('{0}, {1}, {2}, {3}'.format(self.tsne1, self.tsne2, self.tsne3, self.site_class))
-'''
-
-##################################################################
 
 
 #set route for page where data can be inputted by user
@@ -100,13 +66,15 @@ def visualisations():
                 data = pd.read_csv('data/tsne_both.csv')
             elif dataset == "artefacts":
                 data = pd.read_csv('data/tsne_artefacts.csv')
+            elif dataset == 'samples_and_artefacts':
+                data = pd.read_csv('data/tsne_samples_and_artefacts.csv')
 
         data['class_numeric'] = le.fit_transform(data['class'])
 
         colNames = list(data.columns.values)
-        col1 = colNames[0]
-        col2 = colNames[1]
-        col3 = colNames[2]
+        col1 = colNames[1]
+        col2 = colNames[2]
+        col3 = colNames[3]
 
         # Create a trace
         trace = go.Scatter3d(
