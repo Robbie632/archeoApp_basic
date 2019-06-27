@@ -57,6 +57,8 @@ def visualisations():
                 data = pd.read_csv('data/pca_both.csv')
             elif dataset == "artefacts":
                 data = pd.read_csv('data/pca_artefacts.csv')
+            elif dataset == 'samples_and_artefacts':
+                data = pd.read_csv('data/pca_samples_and_artefacts.csv')
         elif visualisation_type == 'tsne':
             if dataset == "bedrock":
                 data = pd.read_csv('data/tsne_bedrock.csv')
