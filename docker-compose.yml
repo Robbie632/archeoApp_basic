@@ -1,0 +1,32 @@
+version: "3.5"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - archeo_net
+
+  flask_app:
+    container_name: flask_app
+    image: flask_app
+    build: ./flask_app
+    ports:
+      - '5000:5000'
+    networks:
+      - archeo_net
+
+  model_runner:
+    container_name: model_runner
+    image: model_runner
+    build: ./model_runner_app
+    networks:
+      - archeo_net
+
+networks:
+  archeo_net:
+    name: archeo_net
+    driver: bridge
