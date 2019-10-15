@@ -1,12 +1,31 @@
+#at the moment the mongo-express cant see the mongodb
+
 version: "3.5"
 
 services:
+
   mongo:
+    container_name: mongo
     image: mongo
     restart: always
+    ports:
+      - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - archeo_net
+
+  mongo_express:
+    image: mongo-express
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    links:
+      - mongo
     networks:
       - archeo_net
 
@@ -19,9 +38,9 @@ services:
     networks:
       - archeo_net
 
-  model_runner:
-    container_name: model_runner
-    image: model_runner
+  model_runner_app:
+    container_name: model_runner_app
+    image: model_runner_app
     build: ./model_runner_app
     networks:
       - archeo_net
