@@ -16,19 +16,6 @@ services:
     networks:
       - archeo_net
 
-  mongo_express:
-    image: mongo-express
-    ports:
-      - '8081:8081'
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    links:
-      - mongo
-    networks:
-      - archeo_net
-
   flask_app:
     container_name: flask_app
     image: flask_app
@@ -37,6 +24,8 @@ services:
       - '5000:5000'
     networks:
       - archeo_net
+    volumes:
+      - '~/uploads:/app/app/uploads'
 
   model_runner_app:
     container_name: model_runner_app

@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
 import os
-from flask import send_from_directory, flash, request, redirect, url_for, session
+from flask import send_from_directory, flash, request, redirect, url_for, session, send_file
 from wtforms import (StringField, SubmitField, BooleanField, DateTimeField,
     RadioField, SelectField, TextField, TextAreaField)
+from flask_dropzone import Dropzone
 import pickle
 from wtforms.validators import DataRequired
 from forms.forms import infoForm
@@ -11,7 +12,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import os
 
- 
+
 
 ##################################################################
 #plotly
@@ -23,8 +24,9 @@ import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, plot, iplot
 ##################################################################
 #__file__ is automatically created when module ran, it takes on the name of the file eg app.py
-#so below we are getting the absolute path to the current directory that the app.py file   is in 
+#so below we are getting the absolute path to the current directory that the app.py file   is in
 base_dir = os.path.abspath(os.path.dirname(__file__))
+filepath = os.path.join(base_dir, 'uploads')
 #instantiate Flask object
 app = Flask(__name__)
 le = LabelEncoder()
@@ -33,19 +35,32 @@ le = LabelEncoder()
 #below sets the secret key for forms
 app.config['SECRET_KEY'] = 'mySecretKey'
 
+app.config.update(
+    UPLOADED_PATH=filepath,
+    # Flask-Dropzone config:
+
+    DROPZONE_ALLOWED_FILE_CUSTOM = True,
+    DROPZONE_ALLOWED_FILE_TYPE='.mp4',
+    #DROPZONE_MAX_FILE_SIZE=300,
+    DROPZONE_MAX_FILES=30,
+)
+
+
+dropzone = Dropzone(app)
+
 
 #set route for page where data can be inputted by user
 @app.route('/visualisations', methods = ['GET', 'POST'])
 def visualisations():
-    
+
     dataset = False
     visualisation_type = False
     #make instance of class infoForm
     form = infoForm()
     #check it's valid
-    
-    if form.validate_on_submit(): 
-        
+
+    if form.validate_on_submit():
+
 
         dataset = form.dataset.data
         visualisation_type = form.visualisation_type.data
@@ -93,7 +108,7 @@ def visualisations():
                 colorscale = 'Rainbow',
         ))
 
-        
+
         layout = go.Layout(autosize=False,width=1000, height=800, title = visualisation_type)
         dataForPlot = [trace]
         fig = dict(data=dataForPlot, layout=layout)
@@ -103,7 +118,7 @@ def visualisations():
         return(render_template('form_response.html', form = form, graphDiv = graphDiv))
         #render form template
     return(render_template('visualisations.html', form = form, dataset=dataset, visualisation_type=visualisation_type))
- 
+
 
 #set path to home page
 @app.route('/')
@@ -130,10 +145,33 @@ def visualisation_details():
 def about_the_developer():
 	return(render_template('about_the_developer.html'))
 
+@app.route('/run_model')
+def run_model():
+	return(render_template('run_model.html'))
+
 #set path to modle origins page
 @app.route('/research')
 def research():
 	return(render_template('research.html'))
+
+@app.route('/get_dropzone')
+def get_dropzone():
+	return(render_template('dropzone.html'))
+
+@app.route('/model_results')
+def model_results():
+	return(render_template('model_results.html'))
+
+@app.route('/', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+
+
+        f = request.files.get('file')
+
+        f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+
+    return(render_template('model_results.html'))
 
 
 #the below code runs the app only when it is being run from command line instead of from within a module
@@ -141,8 +179,3 @@ if __name__ ==	'__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 5000))
     app.run(host = '0.0.0.0', port = port, debug = True)
-
-
-
-
-    

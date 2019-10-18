@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title></title>
-    <style>  
+    <style>
       body{
         background-color:#F2F2F2
       }
@@ -27,6 +27,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('visualisation_details')}}">Visualisation Details</a>
+      </li>
+	  <li class="nav-item">
+        <a class="nav-link" href="{{url_for('run_model')}}">Run Model</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,6 +79,9 @@
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{{url_for('visualisation_details')}}">Visualisation Details</a>
+  </li>
+  <li>
+    <a class="nav-link" href="{{url_for('run_model')}}">Run Model</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{{url_for('about_the_developer')}}">About The Team</a>
