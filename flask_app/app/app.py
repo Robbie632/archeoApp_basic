@@ -40,9 +40,10 @@ app.config.update(
     # Flask-Dropzone config:
 
     DROPZONE_ALLOWED_FILE_CUSTOM = True,
-    DROPZONE_ALLOWED_FILE_TYPE='.mp4',
+    DROPZONE_ALLOWED_FILE_TYPE='.csv',
     #DROPZONE_MAX_FILE_SIZE=300,
     DROPZONE_MAX_FILES=30,
+    DROPZONE_REDIRECT_VIEW={{url_for('model_results', predictions_example = predictions_example)}}
 )
 
 
@@ -158,18 +159,6 @@ def research():
 def get_dropzone():
 	return(render_template('dropzone.html'))
 
-@app.route('/model_results')
-def model_results():
-
-    import pandas as pd
-    #load model
-
-    data = pd.read_csv('uploads/sample_artefact.csv')
-    features = ['Li7', 'Nd146', 'Ba137', 'Sr88', 'Ge72', 'Mn55', 'Cr52', 'V51', 'Zr90', 'U238', 'Mg24', 'Al27', 'K39', 'B11', 'S33']
-    read_feats = [c for c in data.columns.values if c in features]
-    data_feats = data[read_feats]
-    predictions = 'test_location'
-	return(render_template('model_results.html', predictions = predictions))
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
@@ -181,6 +170,21 @@ def upload():
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
 
     return(render_template('model_results.html'))
+
+@app.route('/model_results')
+def model_results():
+    #makes predictions and returns results
+
+    import pandas as pd
+    #load model
+
+    data = pd.read_csv('uploads/sample_artefact.csv')
+    features = ['Li7', 'Nd146', 'Ba137', 'Sr88', 'Ge72', 'Mn55', 'Cr52', 'V51', 'Zr90', 'U238', 'Mg24', 'Al27', 'K39', 'B11', 'S33']
+    read_feats = [c for c in data.columns.values if c in features]
+    data_feats = data[read_feats]
+    predictions = 'test_location'
+
+    return(render_template('model_results.html', predictions = predictions_example))
 
 
 #the below code runs the app only when it is being run from command line instead of from within a module
