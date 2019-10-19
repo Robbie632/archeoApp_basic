@@ -160,7 +160,16 @@ def get_dropzone():
 
 @app.route('/model_results')
 def model_results():
-	return(render_template('model_results.html'))
+
+    import pandas as pd
+    #load model
+
+    data = pd.read_csv('uploads/sample_artefact.csv')
+    features = ['Li7', 'Nd146', 'Ba137', 'Sr88', 'Ge72', 'Mn55', 'Cr52', 'V51', 'Zr90', 'U238', 'Mg24', 'Al27', 'K39', 'B11', 'S33']
+    read_feats = [c for c in data.columns.values if c in features]
+    data_feats = data[read_feats]
+    predictions = 'test_location'
+	return(render_template('model_results.html', predictions = predictions))
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
