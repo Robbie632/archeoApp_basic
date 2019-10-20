@@ -36,6 +36,12 @@ COPY /app/templates /app/app/templates
 
 COPY /app/app.py /app/app
 
+WORKDIR /app/app/models
+
+WORKDIR /app
+
+COPY /app/models /app/app/models 
+
 #this exposes port 5000 on the container, the port 5000 exposed on the container is automatically mapped on the exposed port on the app as specified in app.py
 
 EXPOSE 5000

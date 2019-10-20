@@ -43,7 +43,7 @@ app.config.update(
     DROPZONE_ALLOWED_FILE_TYPE='.csv',
     #DROPZONE_MAX_FILE_SIZE=300,
     DROPZONE_MAX_FILES=30,
-    DROPZONE_REDIRECT_VIEW={{url_for('model_results', predictions_example = predictions_example)}}
+    DROPZONE_REDIRECT_VIEW='see_model_results'
 )
 
 
@@ -91,9 +91,9 @@ def visualisations():
         data['class_numeric'] = le.fit_transform(data['class'])
 
         colNames = list(data.columns.values)
-        col1 = colNames[1]
-        col2 = colNames[2]
-        col3 = colNames[3]
+        col1 = colNames[0]
+        col2 = colNames[1]
+        col3 = colNames[2]
 
         # Create a trace
         trace = go.Scatter3d(
@@ -159,6 +159,11 @@ def research():
 def get_dropzone():
 	return(render_template('dropzone.html'))
 
+@app.route('/see_model_results')
+def see_model_results():
+    return(render_template('see_model_results.html'))
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
@@ -169,22 +174,42 @@ def upload():
 
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
 
-    return(render_template('model_results.html'))
 
-@app.route('/model_results')
-def model_results():
+
+@app.route('/model_run')
+def model_run():
     #makes predictions and returns results
+    encodings = {0: 'FH',
+    1: 'ER',
+    2: 'WW',
+    3: 'TC',
+    4: 'CS',
+    5: 'KQ',
+    6: 'AR',
+    7: 'SL',
+    8: 'FG',
+    9: 'WB',
+    10: 'PF',
+    11: 'WH',
+    12: 'SQ',
+    13: 'WN',
+    14: 'BH',
+    15: 'PH',
+    16: 'LB'}
 
     import pandas as pd
     #load model
-
+    loaded_model = pickle.load(open('models/rfc_model.sav', 'rb'))
     data = pd.read_csv('uploads/sample_artefact.csv')
-    features = ['Li7', 'Nd146', 'Ba137', 'Sr88', 'Ge72', 'Mn55', 'Cr52', 'V51', 'Zr90', 'U238', 'Mg24', 'Al27', 'K39', 'B11', 'S33']
+    features = ['Zr90', 'Ba137', 'Sr88', 'Ge72', 'Cr52', 'S33', 'U238', 'Al27', 'B11', 'Mg24', 'Nd146', 'Sc45', 'K39', 'Pr141', 'Li7']
     read_feats = [c for c in data.columns.values if c in features]
     data_feats = data[read_feats]
-    predictions = 'test_location'
+    prediction_number = loaded_model.predict(data_feats)
 
-    return(render_template('model_results.html', predictions = predictions_example))
+    predicted_class = encodings[prediction_number[0]]
+
+
+    return(render_template('see_classification.html', predicted_class=predicted_class))
 
 
 #the below code runs the app only when it is being run from command line instead of from within a module
