@@ -13,11 +13,7 @@ To use this web application you must first install Docker.
 
 * The docker image needs to be made:
 
-`docker-compose up -d
-
-* The container needs to be run from the docker image:
-
-`docker run -p 5000:5000 -d archeoapp`
+`docker-compose up 
 
 * Go to the following URL:
 
