@@ -13,7 +13,7 @@ To use this web application you must first install Docker.
 
 * The docker image needs to be made:
 
-`docker-compose up 
+`docker-compose up` 
 
 * Go to the following URL:
 
