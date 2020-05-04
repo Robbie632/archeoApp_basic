@@ -45,6 +45,8 @@ services:
       - archeo_net
     expose:
       - "80"
+    depends_on:
+      - flask_app
 
 networks:
   archeo_net:
