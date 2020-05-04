@@ -34,6 +34,18 @@ services:
     networks:
       - archeo_net
 
+  nginx: 
+    image: nginx:latest
+    container_name: production_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/sites-enabled/myproject
+    ports:
+      - 80:80
+    networks:
+      - archeo_net
+    expose:
+      - "80"
+
 networks:
   archeo_net:
     name: archeo_net
