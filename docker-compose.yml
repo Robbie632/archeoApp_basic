@@ -4,17 +4,6 @@ version: "3.5"
 
 services:
 
-  mongo:
-    container_name: mongo
-    image: mongo
-    restart: always
-    ports:
-      - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    networks:
-      - archeo_net
 
   flask_app:
     container_name: flask_app
@@ -27,26 +16,6 @@ services:
     volumes:
       - '~/uploads:/app/app/uploads'
 
-  model_runner_app:
-    container_name: model_runner_app
-    image: model_runner_app
-    build: ./model_runner_app
-    networks:
-      - archeo_net
-
-  nginx: 
-    image: nginx:latest
-    container_name: production_nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/sites-enabled/myproject
-    ports:
-      - 80:80
-    networks:
-      - archeo_net
-    expose:
-      - "80"
-    depends_on:
-      - flask_app
 
 networks:
   archeo_net:
