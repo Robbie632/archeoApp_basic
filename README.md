@@ -31,42 +31,4 @@ This s an example of the types of visualisation that can be visualised and inter
 
 
 
-
-
-https://betterprogramming.pub/how-to-containerize-and-deploy-apps-with-docker-and-heroku-b1c49e5bc070
-
-heroku login
-heroku container:login
-heroku create
-
-then follow this
-
-https://stackoverflow.com/questions/50788725/deploy-docker-image-not-dockerfile-to-heroku
-
-```bash
-docker tag  <image_name> registry.heroku.com/<heroku app name>/image_name
-```
-```bash
-docker push registry.heroku.com/<heroku app name>/image_name
-```
-```bash
-heroku container:release <image_name> --app=<heroku app name>
-```
-
-then back to this 
-
-https://betterprogramming.pub/how-to-containerize-and-deploy-apps-with-docker-and-heroku-b1c49e5bc070
-
-```bash
-
-heroku open
-```
-
-Now add the add-ons in heroku
-
-
-docker build .
-
-
-
-docker run -p 5000:5000 -d <image id>
+https://towardsdatascience.com/deploy-a-dockerized-flask-app-to-google-cloud-platform-71d91b39b25e
