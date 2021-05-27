@@ -10,6 +10,7 @@ from forms.forms import infoForm
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
 import os
 
 
@@ -18,7 +19,6 @@ import os
 #plotly
 # helpful plotly linkhttps://stackoverflow.com/questions/36262748/python-save-plotly-plot-to-local-file-and-insert-into-html
 import json
-import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, plot, iplot
@@ -169,47 +169,57 @@ def see_model_results():
 def upload():
     if request.method == 'POST':
 
+        #run model here and save results to json for now
 
         f = request.files.get('file')
 
+        #save uploaded file
         f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
 
+        #makes predictions and returns results
+        encodings = {0: 'FH',
+        1: 'ER',
+        2: 'WW',
+        3: 'TC',
+        4: 'CS',
+        5: 'KQ',
+        6: 'AR',
+        7: 'SL',
+        8: 'FG',
+        9: 'WB',
+        10: 'PF',
+        11: 'WH',
+        12: 'SQ',
+        13: 'WN',
+        14: 'BH',
+        15: 'PH',
+        16: 'LB'}
+
+        
+        #load model
+        loaded_model = pickle.load(open('models/rfc_model.sav', 'rb'))
+        data = pd.read_csv(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        features = ['Zr90', 'Ba137', 'Sr88', 'Ge72', 'Cr52', 'S33', 'U238', 'Al27', 'B11', 'Mg24', 'Nd146', 'Sc45', 'K39', 'Pr141', 'Li7']
+        read_feats = [c for c in data.columns.values if c in features]
+        data_feats = data[read_feats]
+        prediction_number = loaded_model.predict(data_feats)
+
+        predicted_class = encodings[prediction_number[0]]
+
+        predict_data = {}
+        predict_data["prediction"] = predicted_class
+        #write esults to json file
+        with open("results.json", "w") as f:
+          json.dump(predict_data, f)
 
 
 @app.route('/model_run')
 def model_run():
-    #makes predictions and returns results
-    encodings = {0: 'FH',
-    1: 'ER',
-    2: 'WW',
-    3: 'TC',
-    4: 'CS',
-    5: 'KQ',
-    6: 'AR',
-    7: 'SL',
-    8: 'FG',
-    9: 'WB',
-    10: 'PF',
-    11: 'WH',
-    12: 'SQ',
-    13: 'WN',
-    14: 'BH',
-    15: 'PH',
-    16: 'LB'}
+    # read json file containing predictions then render in html
+    with open("results.json", "r") as f:
+      data = json.load(f)
 
-    import pandas as pd
-    #load model
-    loaded_model = pickle.load(open('models/rfc_model.sav', 'rb'))
-    data = pd.read_csv('uploads/sample_artefact.csv')
-    features = ['Zr90', 'Ba137', 'Sr88', 'Ge72', 'Cr52', 'S33', 'U238', 'Al27', 'B11', 'Mg24', 'Nd146', 'Sc45', 'K39', 'Pr141', 'Li7']
-    read_feats = [c for c in data.columns.values if c in features]
-    data_feats = data[read_feats]
-    prediction_number = loaded_model.predict(data_feats)
-
-    predicted_class = encodings[prediction_number[0]]
-
-
-    return(render_template('see_classification.html', predicted_class=predicted_class))
+    return(render_template('see_classification.html', predicted_class=data["prediction"]))
 
 
 #the below code runs the app only when it is being run from command line instead of from within a module

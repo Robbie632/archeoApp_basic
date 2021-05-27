@@ -22,11 +22,7 @@ WORKDIR /app
 
 COPY /app/forms /app/app/forms
 
-WORKDIR /app/app/python_modelling
-
 WORKDIR /app
-
-COPY /app/python_modelling /app/app/python_modelling
 
 WORKDIR /app/app/templates
 
