@@ -13,6 +13,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 import os
 
+from absl import app
+from absl import flags
+from google.cloud import storage
+from io import StringIO
+
+
 
 
 ##################################################################
@@ -23,6 +29,13 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, plot, iplot
 ##################################################################
+
+FLAGS = flags.FLAGS
+
+flags.DEFINE_boolean("dev",
+                     False,
+                     "defines if running app locally or in google cloud run platform"      
+                    )
 #__file__ is automatically created when module ran, it takes on the name of the file eg app.py
 #so below we are getting the absolute path to the current directory that the app.py file   is in
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -168,13 +181,34 @@ def see_model_results():
 @app.route('/', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
+        predict_data = {}
+        status = "success"
+        prediction_number = ["NA"]
 
         #run model here and save results to json for now
 
         f = request.files.get('file')
 
-        #save uploaded file
-        f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        if not f:
+          return "No file uploaded", 400
+
+        if not FLAGS.dev:
+
+          gcs = storage.Client()
+
+          bucket = gcs.get_bucket("gs://archeo_uploads")
+
+          blob = bucket.blob(f.filename)
+
+          blob.upload_from_string(
+              f.read(),
+              content_type=f.content_type
+          )
+        else:
+
+          #save uploaded file
+          f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+
 
         #makes predictions and returns results
         encodings = {0: 'FH',
@@ -193,22 +227,45 @@ def upload():
         13: 'WN',
         14: 'BH',
         15: 'PH',
-        16: 'LB'}
+        16: 'LB',
+        'NA':'NA'
+        }
 
         
         #load model
         loaded_model = pickle.load(open('models/rfc_model.sav', 'rb'))
-        data = pd.read_csv(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        if FLAGS.dev:
+          data = pd.read_csv(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+        else:
+          
+          #this code from video https://www.youtube.com/watch?v=ED5vHa3fE1Q
+          blob = bucket.get_blob(f.filename)
+          bt = blob.download_as_string()
+          s = str(bt, "utf-8")
+          s = StringIO(s)
+          data = pd.read_csv(s)
+   
+
+
         features = ['Zr90', 'Ba137', 'Sr88', 'Ge72', 'Cr52', 'S33', 'U238', 'Al27', 'B11', 'Mg24', 'Nd146', 'Sc45', 'K39', 'Pr141', 'Li7']
-        read_feats = [c for c in data.columns.values if c in features]
-        data_feats = data[read_feats]
-        prediction_number = loaded_model.predict(data_feats)
+        
+        read_feats = [c for c in data.columns.values if c in features or c.lower() in features or c.upper() in features]
+        try:
+          data_feats = data[read_feats]
+        except ():
+          status = "bad column names"
+          
+        try:
+          prediction_number = loaded_model.predict(data_feats)
+        except:
+          status = "corrupt data"
 
         predicted_class = encodings[prediction_number[0]]
-
-        predict_data = {}
+        
         predict_data["prediction"] = predicted_class
-        #write esults to json file
+        #write results to json file
+        predict_data["status"] = status
+
         with open("results.json", "w") as f:
           json.dump(predict_data, f)
 
@@ -219,7 +276,7 @@ def model_run():
     with open("results.json", "r") as f:
       data = json.load(f)
 
-    return(render_template('see_classification.html', predicted_class=data["prediction"]))
+    return(render_template('see_classification.html', predicted_class=data["prediction"], status = data["status"]))
 
 
 #the below code runs the app only when it is being run from command line instead of from within a module

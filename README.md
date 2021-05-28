@@ -32,3 +32,12 @@ This s an example of the types of visualisation that can be visualised and inter
 
 
 https://towardsdatascience.com/deploy-a-dockerized-flask-app-to-google-cloud-platform-71d91b39b25e
+
+
+update running container:
+https://cloud.google.com/run/docs/deploying
+
+Run build command in folder with dockerfile?
+
+
+https://cloud.google.com/appengine/docs/flexible/python/using-cloud-storage
