@@ -12,11 +12,10 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 import os
-
+import sys
 from absl import app
 from absl import flags
-from google.cloud import storage
-from io import StringIO
+
 
 
 
@@ -36,12 +35,24 @@ flags.DEFINE_boolean("dev",
                      False,
                      "defines if running app locally or in google cloud run platform"      
                     )
+
+# code below necessary because cant use absl app because interferes with flasks app
+# source: https://medium.com/dive-into-ml-ai/flask-webapi-with-absl-py-flags-for-an-image-based-input-output-model-8f41cf05ce7b
+FLAGS(sys.argv)
+
+
 #__file__ is automatically created when module ran, it takes on the name of the file eg app.py
 #so below we are getting the absolute path to the current directory that the app.py file   is in
 base_dir = os.path.abspath(os.path.dirname(__file__))
 filepath = os.path.join(base_dir, 'uploads')
 #instantiate Flask object
 app = Flask(__name__)
+
+
+if not FLAGS.dev:
+    from google.cloud import storage
+    from io import StringIO
+
 le = LabelEncoder()
 
 
@@ -266,15 +277,36 @@ def upload():
         #write results to json file
         predict_data["status"] = status
 
-        with open("results.json", "w") as f:
-          json.dump(predict_data, f)
+        if FLAGS.dev:
+          with open("results.json", "w") as f:
+            json.dump(predict_data, f)
+        else:
 
+          'code below from https://medium.com/analytics-vidhya/how-to-write-and-get-a-json-file-in-google-cloud-storage-when-deploying-flask-api-in-google-app-9121fa936d85'
+          blob = bucket.blob("results.json")
+
+          blob.upload_from_string(
+              predict_data,
+              content_type="'application/json'"
+          )
+
+          # write to bucket
 
 @app.route('/model_run')
 def model_run():
+
     # read json file containing predictions then render in html
-    with open("results.json", "r") as f:
-      data = json.load(f)
+    if FLAGS.dev:
+      with open("results.json", "r") as f:
+        data = json.load(f)
+    else:
+      gcs = storage.Client()
+
+      bucket = gcs.get_bucket("gs://archeo_uploads")
+      blob = bucket.blob("results.json")
+      #read bucket
+      data = json.loads(blob.download_as_string())
+
 
     return(render_template('see_classification.html', predicted_class=data["prediction"], status = data["status"]))
 

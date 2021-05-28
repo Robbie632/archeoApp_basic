@@ -32,7 +32,13 @@ This s an example of the types of visualisation that can be visualised and inter
 
 
 https://towardsdatascience.com/deploy-a-dockerized-flask-app-to-google-cloud-platform-71d91b39b25e
+I created a GCP bucket using the cloud run command line associated with my project and using gsutils
 
+https://cloud.google.com/storage/docs/creating-buckets#storage-create-bucket-gsutil
+
+gcloud builds submit --tag gcr.io/PROJECT-ID/container-name --project <project name>
+
+gcloud run deploy --image gcr.io/PROJECT-ID/container-name --platform managed --project <project name>
 
 update running container:
 https://cloud.google.com/run/docs/deploying
