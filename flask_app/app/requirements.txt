@@ -49,5 +49,6 @@ Werkzeug==0.15.3
 WTForms==2.2.1
 flask_dropzone
 flask_uploads
-google-cloud-storage==1.38.0
+google-cloud-storage==1.37.1
 absl-py
+

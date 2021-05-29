@@ -16,6 +16,8 @@ import sys
 from absl import app
 from absl import flags
 
+from google.cloud import storage
+from io import StringIO
 
 
 
@@ -49,9 +51,8 @@ filepath = os.path.join(base_dir, 'uploads')
 app = Flask(__name__)
 
 
-if not FLAGS.dev:
-    from google.cloud import storage
-    from io import StringIO
+
+
 
 le = LabelEncoder()
 
